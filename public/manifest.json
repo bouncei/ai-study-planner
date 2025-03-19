@@ -1,0 +1,21 @@
+{
+  "name": "ThinkNodes - AI-Powered Study Coach",
+  "short_name": "ThinkNodes",
+  "description": "Your personalized AI study companion that helps you create study plans, track progress, and improve your learning experience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4F46E5",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 
