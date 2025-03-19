@@ -5,6 +5,7 @@ import { UserProfile, StudyPlan as StudyPlanType } from "../types";
 import { storage } from "../utils/storage";
 import { ai } from "../utils/ai";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 
 interface StudyPlanProps {
   userProfile: UserProfile;
@@ -64,8 +65,16 @@ export default function StudyPlan({
       date.setDate(date.getDate() + i);
       const dateKey = date.toISOString().split("T")[0];
 
+      // Distribute topics evenly across the week
+      const topicsPerDay = Math.ceil(content.split("\n").length / 7);
+      const startIndex = i * topicsPerDay;
+      const endIndex = Math.min(
+        startIndex + topicsPerDay,
+        content.split("\n").length
+      );
+
       schedule[dateKey] = {
-        topics: content.split("\n").slice(0, 3), // Take first 3 topics for each day
+        topics: content.split("\n").slice(startIndex, endIndex),
         duration: 60, // Default 1 hour per day
       };
     }
@@ -206,7 +215,9 @@ export default function StudyPlan({
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        {topic}
+                        <div className="prose prose-sm max-w-none">
+                          <ReactMarkdown>{topic}</ReactMarkdown>
+                        </div>
                       </motion.li>
                     ))}
                   </motion.ul>
@@ -216,24 +227,63 @@ export default function StudyPlan({
                   <h6 className="text-sm font-medium text-gray-700 mb-2">
                     Schedule
                   </h6>
-                  <div className="space-y-2">
-                    {Object.entries(plan.schedule).map(([date, schedule]) => (
-                      <div
-                        key={date}
-                        className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg"
-                      >
-                        <span className="text-sm font-medium text-gray-900">
-                          {new Date(date).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {schedule.duration} minutes
-                        </span>
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Day
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Topics
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Duration
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {Object.entries(plan.schedule).map(
+                          ([date, schedule]) => (
+                            <tr key={date} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {new Date(date).toLocaleDateString("en-US", {
+                                  weekday: "long",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </td>
+                              <td className="px-6 py-4">
+                                <ul className="space-y-1">
+                                  {schedule.topics.map((topic, index) => (
+                                    <li
+                                      key={index}
+                                      className="text-sm text-gray-600"
+                                    >
+                                      <div className="prose prose-sm max-w-none">
+                                        <ReactMarkdown>{topic}</ReactMarkdown>
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {schedule.duration} minutes
+                              </td>
+                            </tr>
+                          )
+                        )}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

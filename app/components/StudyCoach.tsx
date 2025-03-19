@@ -57,7 +57,7 @@ export default function StudyCoach() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Welcome to Your AI Study Coach
+            Welcome to Your AI Study Planner
           </motion.h2>
           <motion.p
             className="text-center text-gray-600"
