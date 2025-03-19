@@ -65,7 +65,7 @@ export default function StudyCoach() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Let's get started by creating your profile
+            Let&apos;s get started by creating your profile
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
